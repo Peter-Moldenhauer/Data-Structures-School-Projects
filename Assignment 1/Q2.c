@@ -20,6 +20,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+/************************************************************************************
+*   Entry:  Accepts two int pointers and an int value
+*
+*   Exit:   This function assigns and returns the value of c
+*
+* Purpose:  This function sets and assigns the values of the arguments that were 
+*			passed into the function. It then returns the value of c. 
+*************************************************************************************/
 int foo(int* a, int* b, int c){
     /*Set a to double its original value*/
     *a *= 2;

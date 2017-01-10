@@ -20,7 +20,13 @@
 #include<stdlib.h>
 #include<math.h>
 
-
+/************************************************************************************
+*   Entry:  Accepts an int array and an int (length of array) as arguments. 
+*
+*   Exit:   This function does not return anything. 
+*
+* Purpose:  This function sorts the integer array in ascending order. 
+*************************************************************************************/
 void sort(int* number, int n){
      /*Sort the given array number , of length n*/
      int i;

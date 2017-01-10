@@ -29,6 +29,13 @@ struct student{
 	int score;
 };
 
+/************************************************************************************
+*   Entry:  Accepts no arguments.
+*
+*   Exit:   Function returns the pointer to the array of 10 student structs. 
+*
+* Purpose:  This function allocates memory for ten student structs.
+*************************************************************************************/
 struct student* allocate(){
      /*Allocate memory for ten students*/
      struct student *theStudents = malloc(10 * sizeof(struct student));
@@ -37,6 +44,13 @@ struct student* allocate(){
      return theStudents;
 }
 
+/************************************************************************************
+*   Entry:  Accepts a pointer to student struct array
+*
+*   Exit:   Function does not return anything, just generates random IDs and scores.
+*
+* Purpose:  This function generates random and unique ID and scores for ten students.
+*************************************************************************************/
 void generate(struct student* students){
      int i;
      int temp;
@@ -60,6 +74,13 @@ void generate(struct student* students){
 
 }
 
+/************************************************************************************
+*   Entry:  Accepts a pointer to the student struct array.
+*
+*   Exit:   Function does not return anything, just prints ID and scores of students.
+*
+* Purpose:  This function prints to the screen information about the ten students. 
+*************************************************************************************/
 void output(struct student* students){
      /*Output information about the ten students in the format:
               ID1 Score1
@@ -76,6 +97,14 @@ void output(struct student* students){
     printf("\n");
 }
 
+/************************************************************************************
+*   Entry:  Accepts a pointer to the student struct array.
+*
+*   Exit:   Function does not return anything, just prints the min, max and average.
+*
+* Purpose:  This function computes and prints the minimum, maximum and average scores 
+*			of the ten students. 
+*************************************************************************************/
 void summary(struct student* students){
      /*Compute and print the minimum, maximum and average scores of the ten students*/
      int i;
@@ -109,6 +138,14 @@ void summary(struct student* students){
 
 }
 
+/************************************************************************************
+*   Entry:  Accepts a pointer to the student struct array.
+*
+*   Exit:   Function does not return anything, just dallocates memory. 
+*
+* Purpose:  This function deallocates the memory of the student struct array that was 
+*			initially allocated at the start of the main() function. 
+*************************************************************************************/
 void deallocate(struct student* stud){
      /*Deallocate memory from stud*/
      if(stud != NULL)
