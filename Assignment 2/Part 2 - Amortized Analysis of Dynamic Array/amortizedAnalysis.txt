@@ -73,9 +73,9 @@ Assignment 2 - Part 2 (Amortized Analysis of the dynamic array)
 	x x _ _ _ _ _ _ 
 	
 	Pop() operation which shrinks array in half. Size is 1 and capacity is 4:
-	x _ _ _ _ _ _ _
+	x _ _ _ 
 	
-	The array could then have 7 values pushed onto the array before needing to be resized from a push.
+	The array could then have 3 values pushed onto the array before needing to be resized from a push.
 	
 	
 	
