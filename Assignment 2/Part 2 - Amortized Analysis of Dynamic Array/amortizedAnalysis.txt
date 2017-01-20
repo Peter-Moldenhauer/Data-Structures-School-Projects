@@ -1,0 +1,83 @@
+Peter Moldenhauer
+1/19/17
+CS 261 - Data Structures 
+Assignment 2 - Part 2 (Amortized Analysis of the dynamic array)
+
+
+1)	How many cost units are spend in the entire process of performing 32 consecutive push operations on an empty array
+	which starts out at capacity 8, assuming that the array will double in capacity each time a new item is added to an 
+	already full dynamic array? As N (ie. the number of pushes) grows large, under this strategy for resizing, what is
+	the big-oh complexity for a push?
+	
+	Representation of cost units:
+	1 1 1 1 1 1 1 1 [9] 1 1 1 1 1 1 1 [17] 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+
+	Total cost units to perform 32 consecutive push operations = 56
+	Average cost of units per push = 56 / 32 = 1.75 
+	Big-Oh complexity for a push = O(1)+ 
+	
+	
+2)	How many cost uints are spent in the entire process of performing 32 consecutive push operations on an empty array 
+	which starts out at capacity 8, assuming that the array will grow by a constant 2 spaces each time a new item is 
+	added to an already full dynamic array? As N (ie. the number of pushes) grows large, under this strategy for 
+	resizing, what is the big-oh complexity for a push?
+	
+	Representation of cost units:
+	1 1 1 1 1 1 1 1 [9] 1 [11] 1 [13] 1 [15] 1 [17] 1 [19] 1 [21] 1 [23] 1 [25] 1 [27] 1 [29] 1 [31] 1 
+	
+	Total cost units to perform 32 consecutive push operations = 260
+	Average cost of units per push = 260 / 32 = 8.125
+	Big-Oh complexity for a push = O(N) 
+	
+
+3)	Suppose that a dynamic array stack doubles its capacity when it is full, and shrinks (on Pop only) its capacity by 
+	half when the array is half full or less. Can you devise a sequence of N push() and pop() operations which will 
+	result in poor performance (O(N^2)total cost)? How might you adjust the array's shrinking policy to avoid this? 
+	(Hint: You may assume that the initial capacity of the array is N/2.) 
+	
+	A sequence of push() and pop() operations that would result in poor performance would be to repeatedly alternate 
+	between pop() and push() operations. Assuming that the array starts at a size of half its capacity, you would 
+	start with a pop() operation to shrink the array by half (seeing that it is now less than half the starting capacity). 
+	This new array would now have a size of capacity - 1. A push() operation would then be done next which would max out 
+	the capacity of this array which would then result in the creation of a new array with double the capacity. This process of 
+	pop() and push() operations would then repeat. Due to the fact that each pop() operation has a complexity of O(N) and each 
+	push() operation also has a complexity of O(N), the overall performance of the repeated pop() and push() sequence would 
+	result in O(N * N) or O(N^2) total cost. 
+	
+	Representation of array activity:
+	
+	Initial capacity of array is N/2 (half full). An array of size 4 with a capacity of 8:
+	x x x x _ _ _ _ 
+	
+	Pop() operation which shirnks array in half. Size is 3 and capacity is 4:
+	x x x _
+	
+	Push() operation which puts array at max capacity and therefore doubles capacity. Size is 4 and capacity is now 8:
+	x x x x _ _ _ _ 
+	
+	To avoid this poor performance of O(N^2), the array's shrinking policy can be adjusted. Instead of shrinking its 
+	capacity by half when the array is half full or less, the array can shrink by 1/2 when it is less than 1/4 full. Depending 
+	on the size of the array, the 1/4 could be reduced even further to shrinking by half when the array is 1/8 or 1/16 full. 
+	By doing this, the number of times that the array elements would need to be transfered into a both a larger and smaller 
+	array would be much less. 
+	
+	Representation of array activity with better performance (shrink array by 1/2 when its less than 1/4 full):
+	
+	Initial capacity of array is N/2. An array of size 4 with a capacity of 8:
+	x x x x _ _ _ _ 
+	
+	Pop() operation which removes element without shrinking the array. Size is 3 and capacity is 8:
+	x x x _ _ _ _ _ 
+	
+	Pop() operation which removes element without shrinking the array. Size is 2 and capacity is 8:
+	x x _ _ _ _ _ _ 
+	
+	Pop() operation which shrinks array in half. Size is 1 and capacity is 4:
+	x _ _ _ _ _ _ _
+	
+	The array could then have 7 values pushed onto the array before needing to be resized from a push.
+	
+	
+	
+	
+	
