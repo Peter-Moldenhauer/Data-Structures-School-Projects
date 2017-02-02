@@ -87,7 +87,7 @@ TYPE topArray(struct arrayBagStack * b)
 
 void popArray(struct arrayBagStack * b)
 {
-	assert(isEmpty != 1);
+	assert(isEmptyArray(b) != 1);
 	
 	b->count--;
 }
