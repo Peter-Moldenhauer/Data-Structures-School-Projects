@@ -40,6 +40,7 @@ void _dequeSetCapacity(struct deque *d, int newCap)
 {
 	TYPE *newData = malloc(sizeof(TYPE) * newCap);
 	
+	int i;
 	int j = d->beg; 
 	for (i = 0, i < d->size, i++)
 	{
