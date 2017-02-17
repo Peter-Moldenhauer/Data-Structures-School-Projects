@@ -1,7 +1,7 @@
 /*************************************************************************************************
 * Author:                       Peter Moldenhauer
 * Date Created:                 2/11/17
-* Last Modification Date:       2/11/17
+* Last Modification Date:       2/16/17
 * Filename:                     bst.c
 * Class:                        CS 261 - Data Structures
 * Assignment:                   Assignment 4
@@ -21,12 +21,18 @@
 *   called in this file.
 *************************************************************************************************/
 
+/*
+ File: bst.c
+ Implementation of the binary search tree data structure.
+  */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <assert.h>
 #include "bst.h"
 #include "structs.h"
 
+#define MEM_FIX // Modifies the test code to get rid of the memory leak issues
 
 struct Node {
 	TYPE         val;
@@ -84,6 +90,10 @@ void _freeBST(struct Node *node)
 	if (node != 0) {
 		_freeBST(node->left);
 		_freeBST(node->right);
+#ifdef MEM_FIX
+		assert(node->val);
+		free(node->val);
+#endif
 		free(node);
 	}
 }
@@ -98,10 +108,8 @@ void _freeBST(struct Node *node)
  */
 void clearBSTree(struct BSTree *tree)
 {
-    if ( tree->root != 0) {
 	_freeBST(tree->root);
 	tree->root = 0;
-    }
 	tree->cnt  = 0;
 }
 
@@ -113,10 +121,8 @@ void clearBSTree(struct BSTree *tree)
  */
 void deleteBSTree(struct BSTree *tree)
 {
-	if (tree->root != 0) {
-		clearBSTree(tree);
-		free(tree);
-	}
+	clearBSTree(tree);
+	free(tree);
 }
 
 /*----------------------------------------------------------------------------*/
@@ -283,24 +289,37 @@ Note:  If you do this iteratively, the above hint does not apply.
 /*----------------------------------------------------------------------------*/
 struct Node *_removeLeftMost(struct Node *cur)
 {
-	/*write this*/
+	/* Write this */
 
-    assert(cur != NULL);
+	assert(cur != NULL);
 
-    //create a temp for removing purposes
-    struct Node *tempNode;
+	//create a temp for removing purposes
+	struct Node *tempNode;
 
-    //if the left is not NULL
-    if(cur->left != NULL){
-        //move down the left side recursively
-        cur->left = _removeLeftMost(cur->left);
-        return cur;
-    }
+	// If there is no left this is the left most so delete it and return its right
+	if(cur->left == NULL){
+        tempNode = cur->right;
+        free(cur);
+        return tempNode;
+	}
 
-    //otherwise return right child of cur
-    tempNode = cur->right;
-    free(cur);
-    return tempNode;
+      //	else recursive removal of left on the left node
+	else {
+
+
+
+/*		// Free the data first
+#ifdef MEM_FIX
+		assert(cur->val);
+		free(cur->val);
+#endif
+		// Now free the node
+
+*/		cur->left = _removeLeftMost(cur->left);
+
+
+   return cur;
+	}
 }
 /*
  recursive helper function to remove a node from the tree
@@ -316,34 +335,29 @@ struct Node *_removeNode(struct Node *cur, TYPE val)
 {
 	/*write this*/
 
-    assert(cur != NULL);
-    assert(val != NULL);
-
-    struct Node *tempNode;
-
-    //if the value is found
-    if(compare(val, cur->val) == 0){
-        //then remove
-        if(cur->right != NULL){
-            cur->val = _leftMost(cur->right);
-            cur->right = _removeLeftMost(cur->right);
-            return cur;
+    if(compare(val, cur->val) == -1)
+        cur->left = _removeNode(cur->left, val);
+    else if(compare(val, cur->val) == 1)
+        cur->right = _removeNode(cur->right, val);
+    else
+    {
+        if (cur->left == 0 && cur->right == 0)
+            return NULL;
+        else if (cur->left == 0) {
+            struct Node *retval = cur->right;
+            free(cur);
+            return retval;
+        }
+        else if (cur->right == 0) {
+            struct Node *retval = cur->left;
+            free(cur);
+            return retval;
         }
         else {
-            tempNode = cur->left;
-            free(cur);
-            return tempNode;
+            cur->val = _leftMost(cur->right);
+            cur->right = _removeLeftMost(cur->right);
         }
     }
-    //else go left
-    else if(compare(val, cur->val) < 0){
-        cur->left = _removeNode(cur->left, val);
-    }
-    else {
-        //else go right
-        cur->right = _removeNode(cur->right, val);
-    }
-
     return cur;
 }
 /*
@@ -378,11 +392,12 @@ void printNode(struct Node *cur) {
 	 print_type(cur->val);
 	 printNode(cur->right);
 	 printf(")");
+
 }
 
 void printTree(struct BSTree *tree) {
-	 if (tree == 0) return;
-	 printNode(tree->root);
+	if (tree == 0) return;
+	printNode(tree->root);
 }
 /*----------------------------------------------------------------------------*/
 
@@ -417,11 +432,13 @@ struct BSTree *buildBSTTree() {
 	myData4->number = 10;
 	myData4->name = "lefty of lefty";
 
+
 	/*add the values to BST*/
 	addBSTree(tree, myData1);
 	addBSTree(tree, myData2);
 	addBSTree(tree, myData3);
 	addBSTree(tree, myData4);
+
 
     return tree;
 }
@@ -447,16 +464,33 @@ fucntion to test each node of the BST and their children
 void testAddNode() {
     struct BSTree *tree	= newBSTree();
 
-    struct data myData1,  myData2,  myData3,  myData4;
+#ifndef MEM_FIX
+	struct data myData1,  myData2,  myData3,  myData4;
+#else
+	struct data *myData1 = (struct data *) malloc(sizeof(struct data));
+	struct data *myData2 = (struct data *) malloc(sizeof(struct data));
+	struct data *myData3 = (struct data *) malloc(sizeof(struct data));
+	struct data *myData4 = (struct data *) malloc(sizeof(struct data));
+#endif
 
+	//check the root node
+#ifndef MEM_FIX
 	myData1.number = 50;
 	myData1.name = "rooty";
     addBSTree(tree, &myData1);
-    //check the root node
-    if (compare(tree->root->val, &myData1) != 0) {
-        printf("addNode() test: FAIL to insert 50 as root\n");
-        return;
-    }
+	if (compare(tree->root->val, (TYPE *)&myData1) != 0) {
+		printf("addNode() test: FAIL to insert 50 as root\n");
+		return;
+	}
+#else
+	myData1->number = 50;
+	myData1->name = "rooty";
+	addBSTree(tree, myData1);
+	if (compare(tree->root->val, (TYPE *)myData1) != 0) {
+		printf("addNode() test: FAIL to insert 50 as root\n");
+		return;
+	}
+#endif
 	//check the tree->cnt value after adding a node to the tree
     else if (tree->cnt != 1) {
         printf("addNode() test: FAIL to increase count when inserting 50 as root\n");
@@ -464,56 +498,90 @@ void testAddNode() {
     }
     else printf("addNode() test: PASS when adding 50 as root\n");
 
-
+#ifndef MEM_FIX
 	myData2.number = 13;
 	myData2.name = "lefty";
     addBSTree(tree, &myData2);
 
     //check the position of the second element that is added to the BST tree
-    if (compare(tree->root->left->val, &myData2) != 0) {
+    if (compare(tree->root->left->val, (TYPE *)&myData2) != 0) {
         printf("addNode() test: FAIL to insert 13 as left child of root\n");
         return;
     }
+#else
+	myData2->number = 13;
+	myData2->name = "lefty";
+	addBSTree(tree, myData2);
+
+	//check the position of the second element that is added to the BST tree
+	if (compare(tree->root->left->val, (TYPE *)myData2) != 0) {
+		printf("addNode() test: FAIL to insert 13 as left child of root\n");
+		return;
+	}
+#endif
     else if (tree->cnt != 2) {
         printf("addNode() test: FAIL to increase count when inserting 13 as left of root\n");
         return;
     }
     else printf("addNode() test: PASS when adding 13 as left of root\n");
 
-
+#ifndef MEM_FIX
 	myData3.number = 110;
 	myData3.name = "righty";
     addBSTree(tree, &myData3);
 
     //check the position of the third element that is added to the BST tree
-    if (compare(tree->root->right->val, &myData3) != 0) {
+    if (compare(tree->root->right->val, (TYPE *) &myData3) != 0) {
         printf("addNode() test: FAIL to insert 110 as right child of root\n");
         return;
     }
-    else if (tree->cnt != 3) {
+#else
+	myData3->number = 110;
+	myData3->name = "righty";
+	addBSTree(tree, myData3);
+
+	//check the position of the third element that is added to the BST tree
+	if (compare(tree->root->right->val, (TYPE *)myData3) != 0) {
+		printf("addNode() test: FAIL to insert 110 as right child of root\n");
+		return;
+	}
+#endif
+	else if (tree->cnt != 3) {
         printf("addNode() test: FAIL to increase count when inserting 110 as right of root\n");
         return;
     }
     else printf("addNode() test: PASS when adding 110 as right of root\n");
 
-
+#ifndef MEM_FIX
 	myData4.number = 10;
 	myData4.name = "righty of lefty";
 	addBSTree(tree, &myData4);
 
 	//check the position of the fourth element that is added to the BST tree
-    if (compare(tree->root->left->left->val,  &myData4) != 0) {
+    if (compare(tree->root->left->left->val, (TYPE *) &myData4) != 0) {
         printf("addNode() test: FAIL to insert 10 as left child of left of root\n");
         return;
     }
+#else
+	myData4->number = 10;
+	myData4->name = "righty of lefty";
+	addBSTree(tree, myData4);
+
+	//check the position of the fourth element that is added to the BST tree
+	if (compare(tree->root->left->left->val, (TYPE *)myData4) != 0) {
+		printf("addNode() test: FAIL to insert 10 as left child of left of root\n");
+		return;
+	}
+#endif
     else if (tree->cnt != 4) {
         printf("addNode() test: FAIL to increase count when inserting 10 as left of left of root\n");
         return;
     }
     else printf("addNode() test: PASS when adding 10 as left of left of root\n");
 
+#ifdef MEM_FIX
 	deleteBSTree(tree);
-
+#endif
 }
 
 /*
@@ -524,6 +592,7 @@ void testContainsBSTree() {
     struct BSTree *tree = buildBSTTree();
 
     struct data myData1,  myData2,  myData3,  myData4, myData5;
+
 
 	myData1.number = 50;
 	myData1.name = "rooty";
@@ -547,8 +616,9 @@ void testContainsBSTree() {
      //check containsBSTree fucntion when the tree does not contain a node
     printTestResult(!containsBSTree(tree, &myData5), "containsBSTree", "when test containing 111, which is not in the tree");
 
-
-	 deleteBSTree(tree);
+#ifdef MEM_FIX
+	deleteBSTree(tree);
+#endif
 }
 
 /*
@@ -573,8 +643,9 @@ void testLeftMost() {
 
 	printTestResult(compare(_leftMost(tree->root->right), &myData3) == 0, "_leftMost", "left most of right of root");
 
-        deleteBSTree(tree);
-
+#ifdef MEM_FIX
+	deleteBSTree(tree);
+#endif
 }
 
 void testRemoveLeftMost() {
@@ -588,17 +659,23 @@ void testRemoveLeftMost() {
     cur = _removeLeftMost(tree->root->right);
     printTestResult(cur == NULL, "_removeLeftMost", "removing leftmost of right of root 1st try");
 
+#ifdef MEM_FIX
+	tree->root->right = NULL;
+#endif
+
  	cur = _removeLeftMost(tree->root);
     printTestResult(cur == tree->root, "_removeLeftMost", "removing leftmost of root 2st try");
 
+#ifdef MEM_FIX
 	deleteBSTree(tree);
-
+#endif
 }
 
 void testRemoveNode() {
     struct BSTree *tree = buildBSTTree();
     struct Node *cur;
-     struct data myData1,  myData2,  myData3,  myData4;
+
+	struct data myData1,  myData2,  myData3,  myData4;
 
 	myData1.number = 50;
 	myData1.name = "rooty";
@@ -609,20 +686,36 @@ void testRemoveNode() {
 	myData4.number = 10;
 	myData4.name = "lefty of lefty";
 
-    _removeNode(tree->root, &myData4);
+#ifdef MEM_FIX
+    tree->root = _removeNode(tree->root, &myData4);
+#else
+	_removeNode(tree->root, &myData4);
+#endif
     printTestResult(compare(tree->root->val, &myData1) == 0 && tree->root->left->left == NULL, "_removeNode", "remove left of left of root 1st try");
 
-    _removeNode(tree->root, &myData3);
+#ifdef MEM_FIX
+	tree->root = _removeNode(tree->root, &myData3);
+#else
+	_removeNode(tree->root, &myData3);
+#endif
 	 printTestResult(compare(tree->root->val, &myData1) == 0 && tree->root->right == NULL, "_removeNode", "remove right of root 2st try");
 
-    _removeNode(tree->root, &myData2);
+#ifdef MEM_FIX
+	tree->root = _removeNode(tree->root, &myData2);
+#else
+	_removeNode(tree->root, &myData2);
+#endif
 	printTestResult(compare(tree->root->val, &myData1) == 0 && tree->root->left == 0, "_removeNode", "remove right of root 3st try");
 
     cur = _removeNode(tree->root, &myData1);
+#ifdef MEM_FIX
+	tree->root = cur;
+#endif
     printTestResult(cur == NULL, "_removeNode", "remove right of root 4st try");
 
+#ifdef MEM_FIX
 	deleteBSTree(tree);
-
+#endif
 }
 
 /*
@@ -635,10 +728,10 @@ int main(int argc, char *argv[]){
 
    //After implementing your code, please uncommnet the following calls to the test functions and test your code
 
-  	testAddNode();
+    testAddNode();
 
 	printf("\n");
-  	testContainsBSTree();
+   	testContainsBSTree();
 
 	printf("\n");
     testLeftMost();
