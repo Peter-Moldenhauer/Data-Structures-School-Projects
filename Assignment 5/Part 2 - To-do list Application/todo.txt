@@ -1,0 +1,5 @@
+1, study heap-based priority queue
+3, do assignment 5
+5, travel to texas
+78, go camping
+101, review trees for Midterm 2
