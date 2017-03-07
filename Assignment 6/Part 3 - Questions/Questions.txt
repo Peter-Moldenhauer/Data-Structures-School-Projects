@@ -1,0 +1,29 @@
+Peter Moldenhauer
+CS 261 - Data Structures 
+Assignment 6 - Part 3 
+
+Answers to questions:
+
+1)	Two words that would hash to the same value using hashFunction1 but not hashFunction2 would be eat and ate - and also tea...extra credit for this 3rd word??? :-)
+	These words would hash to the same bucket using hashFunction1 and not hashFunction2. This is because hashFunction1 uses the "folding" method to transform a key 
+	into an integer.
+
+2)	The observation from the above question makes hashFunction2 superior to hashFunction1 because hashFunction2 will result in a better distribution of the keys and 
+	and less collisions. Therefore, hashFunction2 will more likely result in constant time (O(1)) operations and match key/value pairs on the first attempt versus 
+	hashFunction1.
+	
+3)	No, it is not possible for the hashMapSize function to return different values whether you are using hashFunction1 or hashFunction2. This is because hashMapSize 
+	returns the number of total links not the total number of links per bucket. HashFunction1 will most likely fill fewer buckets with more links while hashFunction2 
+	will most likely fill more buckets with fewer links. However, in either case, the hashMapSize will be the same. 
+	
+4)	No, it is not possible for the hashMapTableLoad function to return different values based on if hashFunction1 or hashFunction2 is uese. This is because the ratio 
+	that the hashMapTableLoad function returns tells nothing of the number of empty buckets. This function is only concerned about the size and capacity of the table, 
+	not how many empty buckets there are in the table. 
+	
+5)	Yes, it is possible for the hashMapEmptyBuckets function to return different values based on which hashFunction is used. This is because the two different hash functions 
+	distribute the links in the table differently. As noted in question 3, hashFunction1 will result in more empty buckets than hashFunction2. This will result in different 
+	values from the hashMapEmptyBuckets function. 
+	
+6) 	Yes, there is a difference in the number of empty buckets when you change the table size from an even number like 1000 to a prime like 997. This is because prime numbers 
+	result in a better distribution of the links in the table. A better distribution of links in the table means that there are less empty buckets and a poor distribution of 
+	links in the table means that there are more empty buckets. 
