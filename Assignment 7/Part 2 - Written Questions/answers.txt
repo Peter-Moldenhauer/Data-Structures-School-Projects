@@ -1,0 +1,42 @@
+Peter Moldenhauer
+Assignment 7 - Written Questions 
+CS 261 Data Structures 
+
+1)	The graphs are stored in the provided code as an adjacency matrix represenation. This is because for each vertex, all of the 
+	remaning vertices of the graph are listed out that either have an edge or do not have an edge for that given vertex. If it 
+	were a edge list represenation it would only list out those vertices that have an edge for a given vertex (not the ones that 
+	do not have an edge). 
+	
+2)	Graphs 2 and 3 are connected. This is because in both of these graphs there is at least one path between every pair of vertices 
+	in the graph. This is not the case for graph 1. 
+	
+3)	If we ran each depth-first and breadth-first searches in the other direction (from destination to source), the output would not change. 
+	This is because the graph iteself did not change and we still have the same vertices that have or do not have edges to the rest of the 
+	other vertices in the graph. However, the output would change if the graphs were directed graphs. This is because NOW the graph itself 
+	is potentially changing and an edge between two given vertices may not exist for one of the vertices because the edge is pointing towards 
+	this vertex and therefore is not a "mutual" edge. The number of paths in the graph will change and therefore the output will change. 
+	
+4)	Pros of DFS: 
+	Can get lucky and find the solution very quickly to a connection from a source vertex to the destination vertex. 
+	The very first path that it trys might be the right one. 
+	
+	Cons of DFS: 
+	Can take an unfortunate route and have to backtrack a long way and multiple times to find the connection from a source to the destination. 
+	Also, if there happens to be an infinte path in the graph and the DFS happens to go down this path, the DFS would get stuck and never find 
+	the solution to the source and destination. 
+	
+	Pros of BFS: 
+	Its guaranteed to find a path containing the least steps from a source vertex to the destination vertex (if it exists). If in 
+	the case that theres an infinte path in the graph then BFS will not get stuck in the path.  
+	
+	Cons of BFS: 
+	Will most likely not find the solution as quickly as DFS. 
+	
+	There are a few cases in which you may use DFS over BFS or vice versa. For example, if you wanted to find the solution as quickly as possible from a 
+	source vertex to the destination vertex, you would want to use DFS. However, if you wanted to find a solution to a graph that contained an infinte path, 
+	then you would want to use BFS because the DFS could potentially get stuck in this infinte path and never find the solution. As long as there are other 
+	paths that still lead to the destination (that are not infinte) the BFS will always find a solution. 
+	
+5)	In both cases (DFS and BFS), the Big O execution time to determine if a vertex is reachable from another vertex is O(E). Both algorithms run with a time 
+	that is proportional to the number of edges in the graph. This is because the inner loop of the algorithm(s) is going to run at the most E times (where E 
+	is the number of edges in the graph). 
